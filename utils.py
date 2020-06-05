@@ -66,4 +66,4 @@ def display_predict(classes, probabs):
     print()
     probabs_scales = np.array(probabs) * 10
     for  _class, scale in zip(classes, probabs_scales):
-        print(f"{_class:<30}: {int(scale)*'|':<15}")
+        print(f"{_class:<30}: {int(scale)*'█':<15}")
