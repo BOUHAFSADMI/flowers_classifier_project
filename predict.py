@@ -1,4 +1,4 @@
-from utils import predict_build_argparser, process_image
+from utils import predict_build_argparser, process_image, display_predict
 
 import numpy as np
 import pandas as pd
@@ -86,6 +86,8 @@ def main(args):
     
     print("Classes: ", classes)
     print("Probabs: ", probs)
+
+    display_predict(classes, probs)
 
     print("\nThe End..!\n")
     

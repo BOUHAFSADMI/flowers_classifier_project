@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from PIL import Image
 from torchvision import transforms
-
+import numpy as np
 
 def train_build_argparser():
 
@@ -61,6 +61,9 @@ def process_image(image_path):
     
     return image
 
-    
 
-
+def display_predict(classes, probabs):
+    print()
+    probabs_scales = np.array(probabs) * 10
+    for  _class, scale in zip(classes, probabs_scales):
+        print(f"{_class:<30}: {int(scale)*'|':<15}")
