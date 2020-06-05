@@ -28,7 +28,7 @@ Usage:
 * Basic usage: `python train.py --data_dir data_directory`
 
 Options:
-* Set directory to save checkpoints: `python train.py data_dir --save_dir * save_directory`
+* Set directory to save checkpoints: `python train.py data_dir --save_dir save_directory`
 * Choose architecture: `python train.py --data_dir data_dir --arch "vgg16"`
 * Set hyperparameters: `python train.py --data_dir data_dir --learning_rate 0.01 --hidden_units 512 --epochs 20`
 * Use GPU for training: `python train.py data_dir --gpu`
