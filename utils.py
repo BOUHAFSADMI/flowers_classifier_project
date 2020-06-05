@@ -15,7 +15,7 @@ def train_build_argparser():
 
     parser.add_argument("-l", "--learning_rate", required=False, type=float, default=0.001, help="Learning rate hyperparameter.")
 
-    parser.add_argument("-u", "--hidden_units", required=False, type=int, default=4096, help="Hidden units hyperparameter.")
+    parser.add_argument("-u", "--hidden_units", required=False, type=int, default=512, help="Hidden units hyperparameter.")
 
     parser.add_argument("-e", "--epochs", required=False, type=int, default=20, help="Number of epochs.")
     

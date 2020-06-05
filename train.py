@@ -15,7 +15,7 @@ import json
 
 
 # Build and train your network
-def create_network(cat_to_name, model_name='vgg16', leranrate=0.001, hidden_units=4096):
+def create_network(cat_to_name, model_name='vgg16', learnrate=0.001, hidden_units=512):
     
     """
         Create the model and the optimizer.
@@ -32,24 +32,26 @@ def create_network(cat_to_name, model_name='vgg16', leranrate=0.001, hidden_unit
     
     if model_name == 'vgg16':
         model = models.vgg16(pretrained=True)
+        in_features = model.classifier[-1].in_features
     elif model_name == 'vgg19':
         model = models.vgg19(pretrained=True)
+        in_features = model.classifier[-1].in_features
     elif model_name == 'densenet121':
         model = models.densenet121(pretrained=True)
+        in_features = model.classifier.in_features
     elif model_name == 'densenet161':
         model = models.densenet161(pretrained=True)
+        in_features = model.classifier.in_features
     else:
         print("Please input a valid model name: vgg16|vgg19|densenet121|densenet161.")
         sys.exit(1)
         
     model.name = model_name
-        
-    in_features = model.classifier.in_features
     
-    classifier = nn.Sequential(nn.Linear(in_features, 512),
+    classifier = nn.Sequential(nn.Linear(in_features, hidden_units),
                              nn.ReLU(),
                              nn.Dropout(0.4),
-                             nn.Linear(512, len(cat_to_name)),
+                             nn.Linear(hidden_units, len(cat_to_name)),
                              nn.LogSoftmax(dim=1))
     
     for param in model.parameters():
@@ -93,7 +95,7 @@ def save_model(model, epoch, optimizer, class_to_idx, model_name='saved_model.pt
 
 
 
-def train_model(model, optimizer, criterion, trainloaders, validloaders, class_to_idx,gpu=True, epochs=30, printing_step=200):
+def train_model(model, optimizer, criterion, trainloaders, validloaders, class_to_idx,save_dir, gpu=True, epochs=30, printing_step=200):
     
     """
         Train the neural networks.
@@ -152,7 +154,7 @@ def train_model(model, optimizer, criterion, trainloaders, validloaders, class_t
                 running_loss = 0
                 model.train()
         if valid_loss <= valid_loss_min:
-            save_model(model, epoch, optimizer, class_to_idx, f"saved_model_{model.name}.pth")
+            save_model(model, epoch, optimizer, class_to_idx, save_dir + f"saved_model_{model.name}.pth")
             valid_loss_min = valid_loss
     
 
@@ -202,13 +204,16 @@ def main(args):
     
     with open(args.category_names, 'r') as f:
         cat_to_name = json.load(f)
+    
+    if args.hidden_units < len(cat_to_name):
+        args.error(f"Hidden units should be greater than {len(cat_to_name)}")
           
           
     model, optimizer = create_network(cat_to_name, args.arch, args.learning_rate, args.hidden_units)
     
     criterion = nn.NLLLoss()
     
-    train_model(model, optimizer, criterion, trainloaders, validloaders, train_data.class_to_idx, args.gpu, args.epochs)
+    train_model(model, optimizer, criterion, trainloaders, validloaders, train_data.class_to_idx,args.save_dir, args.gpu, args.epochs)
     
     #************
     
