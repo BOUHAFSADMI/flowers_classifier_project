@@ -19,8 +19,6 @@ def train_build_argparser():
 
     parser.add_argument("-e", "--epochs", required=False, type=int, default=20, help="Number of epochs.")
     
-    parser.add_argument("-t", "--top_k", required=False, type=int, default=5, help="Number classes to display.")
-
     parser.add_argument("-c", "--category_names", required=False, type=str, default='cat_to_name.json', help="Mapping of categories with real names.")
     
     parser.add_argument("-g", "--gpu", required=False, default=True, action='store_true', help="Chose to use gpu or not.")
