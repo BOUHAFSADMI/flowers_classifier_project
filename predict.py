@@ -42,15 +42,16 @@ def predict(image, model, cat_to_name, gpu=False, topk=5):
     ''' Predict the class (or classes) of an image using a trained deep learning model.
     '''
     # predict the class from an image file
-    
-    image = image.unsqueeze(0)
+     
+    image = image.unsqueeze(0) 
     
     model.eval()
     
     if gpu:
-        model.gpu()
+        model.to('cuda')
+        image = image.to('cuda')
     else:    
-        model.cpu()
+        model.to('cpu')
         
     with torch.no_grad():
         log_output = model.forward(image)
@@ -59,12 +60,15 @@ def predict(image, model, cat_to_name, gpu=False, topk=5):
         
         top_prob, top_class = torch.topk(output, topk)
         
+        if gpu:
+            top_prob, top_class = top_prob.cpu(), top_class.cpu()
+        
         labels_mapping_inv = {model.class_to_idx[i]: i for i in model.class_to_idx}
         classes_labels = list()
-        for _class in top_class.numpy()[0]:
+        for _class in top_class.detach().numpy()[0]:
             classes_labels.append(cat_to_name[labels_mapping_inv[_class]])
     
-    return top_prob.numpy()[0], classes_labels
+    return top_prob.detach().numpy()[0], classes_labels
     
 
 def main(args):
